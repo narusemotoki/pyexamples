@@ -1,0 +1,17 @@
+- name: Use UTF-8
+  hosts: vagrant
+  user: vagrant
+  sudo: yes
+  tasks:
+    - name: Make sure the system encoding is utf-8
+      template: src=templates/locale dest=/etc/default/locale owner=root group=root mode=644
+
+- name: Install packages via APT
+  hosts: vagrant
+  user: vagrant
+  sudo: yes
+  tasks:
+    - name: Install
+      apt: pkg={{ item }} update_cache=yes state=latest
+      with_items:
+        - python3-pip
