@@ -2,7 +2,7 @@
 from bottle import route, run, default_app
 
 
-@route('/')
+@route('/transfer/bottle')
 def hello():
     return 'Hello World!'
 

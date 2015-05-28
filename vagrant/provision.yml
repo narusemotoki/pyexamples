@@ -14,4 +14,35 @@
     - name: Install
       apt: pkg={{ item }} update_cache=yes state=latest
       with_items:
+        - nginx
         - python3-pip
+        - python3-dev
+
+- name: Setup Nginx
+  hosts: vagrant
+  user: vagrant
+  sudo: yes
+  tasks:
+    - name: Add config
+      template: src=templates/nginx/pyexamples dest=/etc/nginx/sites-available/pyexamples owner=root group=root mode=644
+    - name: Enabled the config
+      command: ln -s /etc/nginx/sites-available/pyexamples /etc/nginx/sites-enabled/.
+    - name: Desabled default config
+      sudo rm /etc/nginx/sites-enabled/default
+    - name: Restart
+      command: service nginx restart
+
+- name: Setup Applications
+  hosts: vagrant
+  user: vagrant
+  sudo: yes
+  tasks:
+    - name: Make directory for socket
+      command: mkdir -p /var/run/uwsgi/transfer
+    - name: Change owner vagrant
+      command: chown vagrant:vagrant /var/run/uwsgi/transfer
+    - name: Make directory for socket
+      command: mkdir -p /var/log/uwsgi/transfer
+    - name: Change owner vagrant
+      command: chown vagrant:vagrant /var/log/uwsgi/transfer
+
